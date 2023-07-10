@@ -47,13 +47,9 @@
         "format": ["UPPER_CASE"]
       }
     ],
-    "@typescript-eslint/indent": [
-      "warn",
-      4
-    ],
     "@typescript-eslint/no-unused-expressions": [
       "warn",
-      { 
+      {
         "allowShortCircuit": false,
         "allowTernary": false
       }

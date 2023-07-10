@@ -8,7 +8,7 @@ const glob = require("glob");
 const zip = require('bestzip');
 const path = require("path");
 
-const pathToMods = "C:\\games\\EFT_3.5.8\\MODS\\MarsyApp-MasterKey\\user\\mods"
+const pathToMods = "C:\\games\\EFT_3.5.8\\user\\mods"
 
 // Load the package.json file to get some information about the package so we can name things appropriately. This is
 // atypical, and you would never do this in a production environment, but this script is only used for development so
