@@ -1,0 +1,50 @@
+[
+	{
+		"_id": "63d385b8b3eba6c95d0ef055",
+		"intId": 26,
+		"user": {
+			"id": "58330581ace78e27b8b10cee",
+			"memberType": 4,
+			"nickname": "Skier",
+			"rating": 1,
+			"isRatingGrowing": true,
+			"avatar": "/files/trader/avatar/59b91cb486f77469a81232e5.jpg"
+		},
+		"root": "63d385b8b3eba6c95d0ef055",
+		"items": [
+			{
+				"_id": "63d385b8b3eba6c95d0ef055",
+				"_tpl": "6165ac8c290d254f5e6b2f6c",
+				"parentId": "",
+				"slotId": "hideout",
+				"upd": {
+					"UnlimitedCount": true,
+					"StackObjectsCount": 1190000,
+					"BuyRestrictionMax": 5,
+					"BuyRestrictionCurrent": 0
+				}
+			}
+		],
+		"requirements": [
+			{
+				"_tpl": "569668774bdc2da2298b4568",
+				"count": 116.92,
+				"onlyFunctional": false
+			}
+		],
+		"requirementsCost": 14030,
+		"itemsCost": 12200,
+		"summaryCost": 14030,
+		"startTime": 1683129769,
+		"endTime": 1683131567,
+		"loyaltyLevel": 2,
+		"sellInOnePiece": false,
+		"priority": false,
+		"locked": false,
+		"unlimitedCount": false,
+		"notAvailable": false,
+		"CurrentItemCount": 0,
+		"buyRestrictionCurrent": 0,
+		"buyRestrictionMax": 5
+	}
+]
