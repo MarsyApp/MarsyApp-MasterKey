@@ -2,7 +2,7 @@
 
 const fs = require("fs-extra");
 const glob = require("glob");
-const zip = require('bestzip');
+const zip = require("bestzip");
 const path = require("path");
 
 const pathToMods = "D:\\spt-381\\user\\mods"
@@ -59,8 +59,19 @@ fs.copySync(path.normalize(`${__dirname}/${modName}`), path.normalize(`${pathToM
 console.log("Build files copied.");
 
 fs.copySync(path.normalize(`${__dirname}/${modName}`), path.normalize(`${__dirname}/dist/user/mods/${packageNameRes2}`));
-fs.copySync(path.normalize(`${__dirname}/clientMod/bin/Release/net472/${packageNameRes2}.dll`), path.normalize(`${__dirname}/dist/BepInEx/plugins/${packageNameRes2}.dll`));
+console.log("Build files copied.");
 
+const pathToBuiltDll = path.normalize(`${__dirname}/builtDll`);
+const files = fs.readdirSync(pathToBuiltDll);
+if (files.length !== 1) {
+    console.log("No files found in builtDll");
+    // @ts-ignore
+    return;
+}
+
+const file = files[0];
+fs.copySync(path.normalize(`${pathToBuiltDll}/${file}`), path.normalize(`${__dirname}/dist/BepInEx/plugins/${file}`));
+console.log("dll files copied.");
 console.log("dist files copied.");
 
 const dirsArray = fs.readdirSync(`${__dirname}/dist`);
@@ -68,7 +79,7 @@ console.log(dirsArray);
 zip({
     source: dirsArray,
     destination: `${modName}.zip`,
-    cwd: `${__dirname}/dist`,
+    cwd: `${__dirname}/dist`
 }).catch(function(err)
 {
     console.error("A bestzip error has occurred: ", err.stack);

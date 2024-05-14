@@ -96,6 +96,7 @@
 		</PostBuildEvent>
 		<PostBuildEvent>
 			copy "$(TargetDir)$(TargetFileName)" "D:\spt-381\BepInEx\scripts\$(TargetFileName)"
+			copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)\..\builtDll\$(TargetFileName)"
 		</PostBuildEvent>
 	</PropertyGroup>
 </Project>
