@@ -7,8 +7,8 @@ using Diz.LanguageExtensions;
 using EFT;
 using EFT.Interactive;
 using EFT.InventoryLogic;
-using EFT.UI.DragAndDrop;
 using HarmonyLib;
+using UnityEngine;
 
 namespace MasterKey
 {
@@ -33,7 +33,7 @@ namespace MasterKey
             {
                 new MasterKeyPatches.PlayerOwnerPatch(),
                 new MasterKeyPatches.WorldInteractiveObjectPatch(),
-                new MasterKeyPatches.GClass1726Patch(),
+                new MasterKeyPatches.GetActionsClassPatch(),
             };
         }
 
@@ -64,10 +64,9 @@ namespace MasterKey
             private static FieldInfo controllerClassFieldInfo;
             protected override MethodBase GetTargetMethod()
             {
-                playerFieldInfo = typeof(PlayerOwner).GetField("player_0", BindingFlags.Instance | BindingFlags.NonPublic);
-                controllerClassFieldInfo = typeof(Player).GetField("_inventoryController", BindingFlags.Instance | BindingFlags.NonPublic);
-                return typeof(PlayerOwner).GetMethod("GetKey",
-                    BindingFlags.Instance | BindingFlags.Public);
+                playerFieldInfo = AccessTools.GetDeclaredFields(typeof(PlayerOwner)).Single(x => x.FieldType == typeof(Player));
+                controllerClassFieldInfo = AccessTools.GetDeclaredFields(typeof(Player)).Single(x => x.FieldType == typeof(InventoryControllerClass));
+                return AccessTools.Method(typeof(PlayerOwner), nameof(PlayerOwner.GetKey));
             }
 
             [PatchPostfix]
@@ -79,7 +78,7 @@ namespace MasterKey
                     {
                         Player player = (Player)playerFieldInfo.GetValue(__instance);
                         InventoryControllerClass controllerClass = (InventoryControllerClass)controllerClassFieldInfo.GetValue(player);
-                        KeyComponent KeyMasterComponent = controllerClass.Inventory.Equipment.GetItemComponentsInChildren<KeyComponent>(onlyMerged: false).FirstOrDefault((KeyComponent x) => x.Template.KeyId == "MA_MasterKey");
+                        KeyComponent KeyMasterComponent = controllerClass.Inventory.Equipment.GetItemComponentsInChildren<KeyComponent>(onlyMerged: false).FirstOrDefault((x) => x.Template.KeyId == "MA_MasterKey");
                         
                         if (KeyMasterComponent != null)
                         {
@@ -87,7 +86,7 @@ namespace MasterKey
                         }
                     }
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     Logger.LogError(e.Message);
                     
@@ -100,12 +99,11 @@ namespace MasterKey
         {
             protected override MethodBase GetTargetMethod()
             {
-                return typeof(WorldInteractiveObject).GetMethod("UnlockOperation",
-                    BindingFlags.Instance | BindingFlags.Public);
+                return AccessTools.Method(typeof(WorldInteractiveObject), nameof(WorldInteractiveObject.UnlockOperation));
             }
             
             [PatchPostfix]
-            private static void PatchPostfix(ref KeyComponent key, Player player, WorldInteractiveObject __instance, ref GStruct376<GClass2761> __result)
+            private static void PatchPostfix(ref KeyComponent key, Player player, WorldInteractiveObject __instance, ref GStruct416<GClass2964> __result)
             {
                 if (key.Template.KeyId == "MA_MasterKey")
                 {
@@ -115,34 +113,31 @@ namespace MasterKey
                         return;
                     }
                     
-                    GStruct375<GClass2594> gStruct = default(GStruct375<GClass2594>);
+                    GStruct414<GClass2783> gStruct = default(GStruct414<GClass2783>);
                     key.NumberOfUsages++;
                     if (key.NumberOfUsages >= key.Template.MaximumNumberOfUsage && key.Template.MaximumNumberOfUsage > 0)
                     {
-                        gStruct = GClass2585.Discard(key.Item, (TraderControllerClass)key.Item.Parent.GetOwner());
+                        gStruct = InteractionsHandlerClass.Discard(key.Item, (TraderControllerClass)key.Item.Parent.GetOwner());
                         if (gStruct.Failed)
                         {
                             __result = gStruct.Error;
                         }
                     }
-                    __result = new GClass2761(key, gStruct.Value, succeed: true);
+                    __result = new GClass2964(key, gStruct.Value, succeed: true);
                 }
             }
         }
         
-        public class GClass1726Patch : ModulePatch
+        public class GetActionsClassPatch : ModulePatch
         {
-            private static FieldInfo controllerClassFieldInfo;
             protected override MethodBase GetTargetMethod()
             {
-                controllerClassFieldInfo = typeof(Player).GetField("_inventoryController", BindingFlags.Instance | BindingFlags.NonPublic);
-                return typeof(GClass1726).GetMethod("smethod_2",
-                    BindingFlags.Static | BindingFlags.NonPublic);
+                return AccessTools.Method(typeof(GetActionsClass), "smethod_3");
             }
 
             [PatchPostfix]
-            private static void PatchPostfix(GamePlayerOwner owner, WorldInteractiveObject worldInteractiveObject, GClass1726 __instance,
-                ref GClass2805 __result)
+            private static void PatchPostfix(GamePlayerOwner owner, WorldInteractiveObject worldInteractiveObject, GetActionsClass __instance,
+                ref ActionsReturnClass __result)
             {
                 if (__result.Actions.Count > 0)
                 {
@@ -153,7 +148,7 @@ namespace MasterKey
                         KeyComponent key = owner.GetKey(worldInteractiveObject);
                         if (key != null && key.Template.KeyId == "MA_MasterKey")
                         {
-                            __result.Actions[index].Name = "ОТКРЫТЬ отмычкой";
+                            __result.Actions[index].Name = "MA_MasterKeyUnlock";
                         }
                     }
                 }
