@@ -39,7 +39,7 @@ class Mod implements IPostAkiLoadMod, IPostDBLoadMod
 			const lootItem = loots[loot];
 			lootItem.itemDistribution.push({
 				tpl: itemId,
-				relativeProbability: 30
+				relativeProbability: 238365
 			});
 		}
 
