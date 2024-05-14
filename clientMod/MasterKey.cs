@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using BepInEx;
-using EFT.InventoryLogic;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
 
 namespace MasterKey
 {
-    [BepInPlugin("com.MarsyApp.MasterKey", "MarsyApp-MasterKey", "1.0.0")]
+    [BepInPlugin("com.MarsyApp.MasterKey", "MarsyApp-MasterKey", "1.1.0")]
     public class MasterKey : BaseUnityPlugin
     {
         private void Awake()
