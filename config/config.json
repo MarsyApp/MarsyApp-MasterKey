@@ -1,12 +1,6 @@
 {
     "price": 1000,
-    "trader_loyalty_level": 1,
-    "ExternalSize": {
-        "cellH": 2,
-        "cellV": 1
-    },
-    "InternalSize": [{
-        "cellH": 10,
-        "cellV": 5
-    }]
+    "maximumNumberOfUsage": 1,
+    "relativeProbability_desc": "default key weights in jackets are like 300-1500. A lockpick can appear in any container",
+    "weights": 30000
 }

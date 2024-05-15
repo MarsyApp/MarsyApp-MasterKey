@@ -22,7 +22,7 @@ class Mod implements IPostAkiLoadMod, IPostDBLoadMod
 		const tables = databaseServer.getTables();
 		const loots = tables.loot.staticLoot;
 		const handbook = tables.templates.handbook;
-		const locales = Object.values(tables.locales.global) as Record<string, string>[];
+		const locales = tables.locales.global;
 
 		const KEY_ID = "5448ba0b4bdc2d02308b456c";
 		const KEY_KEYS_ID = "59fafd4b86f7745ca07e1232";
@@ -30,16 +30,21 @@ class Mod implements IPostAkiLoadMod, IPostDBLoadMod
 		const itemId = "MA_MasterKey",
 			itemCategory = "5795f317245977243854e041",
 			itemFleaPrice = config.price,
-			itemName = "Отмычка",
-			itemShortName = "Отмычка",
-			itemDescription = "Одноразовая отмычка, откроет любую дверь"
+			itemNameRu = "Отмычка",
+			itemNameEn = "Lockpick",
+			itemShortNameRu = "Отмычка",
+			itemShortNameEn = "Lockpick",
+			itemDescriptionRu = "Одноразовая отмычка, откроет любую дверь",
+			itemDescriptionEn = "Disposable lock pick, opens any door.",
+			ActionTextRu = "! ОТКРЫТЬ ОТМЫЧКОЙ !",
+			ActionTextEn = "! USE LOCKPICK !"
 
 		for (const loot in loots)
 		{
 			const lootItem = loots[loot];
 			lootItem.itemDistribution.push({
 				tpl: itemId,
-				relativeProbability: 238365
+				relativeProbability: config.weights
 			});
 		}
 
@@ -49,16 +54,17 @@ class Mod implements IPostAkiLoadMod, IPostDBLoadMod
 
 		item._id = itemId;
 		item._props.Prefab.path = itemKeyCont._props.Prefab.path;
-		item._props.MaximumNumberOfUsage = 1;
+		item._props.MaximumNumberOfUsage = config.maximumNumberOfUsage;
 		item._props.InsuranceDisabled = true;
 		tables.templates.items[itemId] = item;
 
-		// Add locales
-		for (const locale of locales) {
-			locale[`${itemId} Name`] = itemName;
-			locale[`${itemId} ShortName`] = itemShortName;
-			locale[`${itemId} Description`] = itemDescription;
-		}
+	const localesKeys = Object.keys(locales);
+	for (const localeKey of localesKeys) {
+		locales[localeKey]["MA_MasterKeyUnlock"] = localeKey === "ru" ? ActionTextRu : ActionTextEn;
+		locales[localeKey][`${itemId} Name`] = localeKey === "ru" ? itemNameRu : itemNameEn;
+		locales[localeKey][`${itemId} ShortName`] = localeKey === "ru" ? itemShortNameRu : itemShortNameEn;
+		locales[localeKey][`${itemId} Description`] = localeKey === "ru" ? itemDescriptionRu : itemDescriptionEn;
+	}
 
 		handbook.Items.push(
 			{

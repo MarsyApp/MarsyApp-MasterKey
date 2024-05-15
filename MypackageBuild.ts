@@ -46,7 +46,7 @@ const ignoreList = [
     "MypackageBuild.ts",
     "clientMod",
     "dist",
-    modName
+    "builtDll"
 ];
 const exclude = glob.sync(`{${ignoreList.join(",")}}`, { realpath: true, dot: true });
 
