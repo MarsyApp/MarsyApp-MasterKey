@@ -33,6 +33,7 @@ namespace MasterKey
             {
                 new MasterKeyPatches.PlayerOwnerPatch(),
                 new MasterKeyPatches.WorldInteractiveObjectPatch(),
+                new MasterKeyPatches.KeycardDoorUnlockOperationPatch(),
                 new MasterKeyPatches.GetActionsClassPatch(),
             };
         }
@@ -106,6 +107,39 @@ namespace MasterKey
             private static void PatchPostfix(ref KeyComponent key, Player player, WorldInteractiveObject __instance, ref GStruct416<GClass2964> __result)
             {
                 if (key.Template.KeyId == "MA_MasterKey")
+                {
+                    Error canInteract = player.MovementContext.CanInteract;
+                    if (canInteract != null)
+                    {
+                        return;
+                    }
+                    
+                    GStruct414<GClass2783> gStruct = default(GStruct414<GClass2783>);
+                    key.NumberOfUsages++;
+                    if (key.NumberOfUsages >= key.Template.MaximumNumberOfUsage && key.Template.MaximumNumberOfUsage > 0)
+                    {
+                        gStruct = InteractionsHandlerClass.Discard(key.Item, (TraderControllerClass)key.Item.Parent.GetOwner());
+                        if (gStruct.Failed)
+                        {
+                            __result = gStruct.Error;
+                        }
+                    }
+                    __result = new GClass2964(key, gStruct.Value, succeed: true);
+                }
+            }
+        }
+        
+        public class KeycardDoorUnlockOperationPatch : ModulePatch
+        {
+            protected override MethodBase GetTargetMethod()
+            {
+                return AccessTools.Method(typeof(KeycardDoor), nameof(KeycardDoor.UnlockOperation));
+            }
+            
+            [PatchPostfix]
+            private static void PatchPostfix(ref KeyComponent key, Player player, ref GStruct416<GClass2964> __result)
+            {
+                if (key.Template.KeyId == "MA_MasterCard")
                 {
                     Error canInteract = player.MovementContext.CanInteract;
                     if (canInteract != null)
