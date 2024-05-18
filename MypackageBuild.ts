@@ -55,6 +55,7 @@ fs.copySync(__dirname, path.normalize(`${__dirname}/../~${modName}`), {filter:(f
         return !exclude.includes(filePath);
     }});
 fs.moveSync(path.normalize(`${__dirname}/../~${modName}`), path.normalize(`${__dirname}/${modName}`), { overwrite: true });
+fs.rmSync(`${pathToMods}/${packageNameRes2}`, { force: true, recursive: true });
 fs.copySync(path.normalize(`${__dirname}/${modName}`), path.normalize(`${pathToMods}/${packageNameRes2}`));
 console.log("Build files copied.");
 

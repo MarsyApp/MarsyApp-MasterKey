@@ -1,10 +1,11 @@
 {
     "name": "MasterKey",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "main": "src/mod.js",
     "license": "MIT",
     "author": "MarsyApp",
     "akiVersion": "~3.8",
+    "isBundleMod": true,
     "scripts": {
         "setup": "npm i",
         "build": "node ./packageBuild.ts",

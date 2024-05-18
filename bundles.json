@@ -1,0 +1,25 @@
+{
+	"manifest": [
+        			{
+            			"key": "item_keycard_lab_red.bundle",
+            			"dependencyKeys":
+                                [
+                                    "assets/commonassets/physics/physicsmaterials.bundle",
+                                    "item_keycard_lab_gloss_nrm",
+                                    "item_keycard_lab_mesh",
+                                    "cubemaps",
+                                    "shaders"
+                                ]
+			        },
+                    {
+                        "key": "item_keycard_lab_gloss_nrm",
+                        "dependencyKeys":
+                                []
+                    },
+                    {
+                        "key": "item_keycard_lab_mesh",
+                        "dependencyKeys":
+                                []
+                    }
+                ]
+}

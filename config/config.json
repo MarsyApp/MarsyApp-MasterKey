@@ -2,5 +2,6 @@
     "price": 1000,
     "maximumNumberOfUsage": 1,
     "relativeProbability_desc": "default key weights in jackets are like 300-1500. A lockpick can appear in any container",
-    "weights": 30000
+    "weights": 30000,
+    "cardWeights": 15000
 }

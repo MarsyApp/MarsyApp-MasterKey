@@ -6,17 +6,14 @@ import {DatabaseServer} from "@spt-aki/servers/DatabaseServer";
 
 import * as config from "../config/config.json";
 
-class Mod implements IPostAkiLoadMod, IPostDBLoadMod
-{
+class Mod implements IPostAkiLoadMod, IPostDBLoadMod {
 	container: DependencyContainer;
 
-	public postAkiLoad(container: DependencyContainer): void
-{
+	public postAkiLoad(container: DependencyContainer): void {
 		this.container = container;
 	}
 
-	public postDBLoad(container: DependencyContainer): void
-{
+	public postDBLoad(container: DependencyContainer): void {
 		const jsonUtil = container.resolve<JsonUtil>("JsonUtil");
 		const databaseServer = container.resolve<DatabaseServer>("DatabaseServer");
 		const tables = databaseServer.getTables();
@@ -27,54 +24,97 @@ class Mod implements IPostAkiLoadMod, IPostDBLoadMod
 		const KEY_ID = "5448ba0b4bdc2d02308b456c";
 		const KEY_KEYS_ID = "59fafd4b86f7745ca07e1232";
 
-		const itemId = "MA_MasterKey",
-			itemCategory = "5795f317245977243854e041",
-			itemFleaPrice = config.price,
-			itemNameRu = "Отмычка",
-			itemNameEn = "Lockpick",
-			itemShortNameRu = "Отмычка",
-			itemShortNameEn = "Lockpick",
-			itemDescriptionRu = "Одноразовая отмычка, откроет любую дверь",
-			itemDescriptionEn = "Disposable lock pick, opens any door.",
-			ActionTextRu = "! ОТКРЫТЬ ОТМЫЧКОЙ !",
-			ActionTextEn = "! USE LOCKPICK !"
+		const CARD_ID = "5e42c81886f7742a01529f57";
 
-		for (const loot in loots)
-		{
+		const itemKeyId = "MA_MasterKey",
+			itemKeyCategory = "5795f317245977243854e041",
+			itemKeyFleaPrice = config.price,
+			itemKeyNameRu = "Отмычка",
+			itemKeyNameEn = "Lockpick",
+			itemKeyShortNameRu = "Отмычка",
+			itemKeyShortNameEn = "Lockpick",
+			itemKeyDescriptionRu = "Одноразовая отмычка, откроет любую дверь",
+			itemKeyDescriptionEn = "Disposable lock pick, opens any door",
+			actionKeyTextRu = "! ОТКРЫТЬ ОТМЫЧКОЙ !",
+			actionKeyTextEn = "! USE LOCKPICK !"
+
+		const itemCardId = "MA_MasterCard",
+			itemCardCategory = "5795f317245977243854e041",
+			itemCardFleaPrice = config.price,
+			itemPrefabPath ="item_keycard_lab_red.bundle",
+			itemCardNameRu = "Взломщик",
+			itemCardNameEn = "Keygrabber",
+			itemCardShortNameRu = "Взлом.",
+			itemCardShortNameEn = "Grabber",
+			itemCardDescriptionRu = "Одноразовый перехватчик кодов, откроет любую дверь запертую на ключ-карту",
+			itemCardDescriptionEn = "Disposable keygrabber, will open any door locked with a key card"
+
+		for (const loot in loots) {
 			const lootItem = loots[loot];
 			lootItem.itemDistribution.push({
-				tpl: itemId,
+				tpl: itemKeyId,
 				relativeProbability: config.weights
+			});
+			lootItem.itemDistribution.push({
+				tpl: itemCardId,
+				relativeProbability: config.cardWeights
 			});
 		}
 
 
-		const item = jsonUtil.clone(tables.templates.items[KEY_ID]);
+		const itemKey = jsonUtil.clone(tables.templates.items[KEY_ID]);
 		const itemKeyCont = jsonUtil.clone(tables.templates.items[KEY_KEYS_ID]);
 
-		item._id = itemId;
-		item._props.Prefab.path = itemKeyCont._props.Prefab.path;
-		item._props.MaximumNumberOfUsage = config.maximumNumberOfUsage;
-		item._props.InsuranceDisabled = true;
-		tables.templates.items[itemId] = item;
+		itemKey._id = itemKeyId;
+		itemKey._props.Prefab.path = itemKeyCont._props.Prefab.path;
+		itemKey._props.MaximumNumberOfUsage = config.maximumNumberOfUsage;
+		itemKey._props.InsuranceDisabled = true;
+		tables.templates.items[itemKeyId] = itemKey;
 
-	const localesKeys = Object.keys(locales);
-	for (const localeKey of localesKeys) {
-		locales[localeKey]["MA_MasterKeyUnlock"] = localeKey === "ru" ? ActionTextRu : ActionTextEn;
-		locales[localeKey][`${itemId} Name`] = localeKey === "ru" ? itemNameRu : itemNameEn;
-		locales[localeKey][`${itemId} ShortName`] = localeKey === "ru" ? itemShortNameRu : itemShortNameEn;
-		locales[localeKey][`${itemId} Description`] = localeKey === "ru" ? itemDescriptionRu : itemDescriptionEn;
-	}
+		const localesKeys = Object.keys(locales);
+		for (const localeKey of localesKeys) {
+			locales[localeKey]["MA_MasterKeyUnlock"] = localeKey === "ru" ? actionKeyTextRu : actionKeyTextEn;
+			locales[localeKey][`${itemKeyId} Name`] = localeKey === "ru" ? itemKeyNameRu : itemKeyNameEn;
+			locales[localeKey][`${itemKeyId} ShortName`] = localeKey === "ru" ? itemKeyShortNameRu : itemKeyShortNameEn;
+			locales[localeKey][`${itemKeyId} Description`] = localeKey === "ru" ? itemKeyDescriptionRu : itemKeyDescriptionEn;
+		}
 
 		handbook.Items.push(
 			{
-				"Id": itemId,
-				"ParentId": itemCategory,
-				"Price": itemFleaPrice
+				"Id": itemKeyId,
+				"ParentId": itemKeyCategory,
+				"Price": itemKeyFleaPrice
 			}
 		);
 
-		this.allowIntoSecureContainers(itemId, tables.templates.items);
+		this.allowIntoSecureContainers(itemKeyId, tables.templates.items);
+
+
+		// -------------------------------------------
+
+		const itemCard = jsonUtil.clone(tables.templates.items[CARD_ID]);
+
+		itemCard._id = itemCardId;
+		itemCard._props.Prefab.path = itemPrefabPath;
+		itemCard._props.MaximumNumberOfUsage = config.maximumNumberOfUsage;
+		itemCard._props.InsuranceDisabled = true;
+		tables.templates.items[itemCardId] = itemCard;
+
+		for (const localeKey of localesKeys) {
+			locales[localeKey][`${itemCardId} Name`] = localeKey === "ru" ? itemCardNameRu : itemCardNameEn;
+			locales[localeKey][`${itemCardId} ShortName`] = localeKey === "ru" ? itemCardShortNameRu : itemCardShortNameEn;
+			locales[localeKey][`${itemCardId} Description`] = localeKey === "ru" ? itemCardDescriptionRu : itemCardDescriptionEn;
+		}
+
+		handbook.Items.push(
+			{
+				"Id": itemCardId,
+				"ParentId": itemCardCategory,
+				"Price": itemCardFleaPrice
+			}
+		);
+
+		this.allowIntoSecureContainers(itemCardId, tables.templates.items);
 	}
 
 	allowIntoSecureContainers(itemId, items): void {
